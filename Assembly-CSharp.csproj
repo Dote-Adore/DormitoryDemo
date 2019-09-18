@@ -55,9 +55,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Player\Camera\FPSCameraRotation.cs" />
+     <Compile Include="Assets\Scripts\Player\Camera\CameraRotation.cs" />
      <Compile Include="Assets\Scripts\Player\Camera\RayCast.cs" />
-     <Compile Include="Assets\Scripts\Player\FpsPlayerMove.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerMove.cs" />
      <None Include="Assets\Shaders\Outline.shader" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>F:/UnityProject/DormitoryDemo/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

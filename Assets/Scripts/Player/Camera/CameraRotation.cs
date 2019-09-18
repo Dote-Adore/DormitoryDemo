@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
-public class FPSCameraRotation : MonoBehaviour
+public class CameraRotation : MonoBehaviour
 {
     // 是否锁定鼠标
     public bool lockCursor;
+    public bool lockRotation;
     // X speed
     public float sensitivityX = 5F;
     // Y speed
@@ -27,13 +28,15 @@ public class FPSCameraRotation : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
         }
-
-        // x轴转向
-        float rotationY = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
-        rotationX += Input.GetAxis("Mouse Y") * sensitivityY;
-        // 限制y轴转向
-        rotationX = Mathf.Clamp(rotationX, minimumX, maxmumX);
-        // 赋予新值
-        transform.localEulerAngles = new Vector3(-rotationX, rotationY, 0);
+        if (!lockRotation)
+        {
+            // x轴转向
+            float rotationY = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
+            rotationX += Input.GetAxis("Mouse Y") * sensitivityY;
+            // 限制y轴转向
+            rotationX = Mathf.Clamp(rotationX, minimumX, maxmumX);
+            // 赋予新值
+            transform.localEulerAngles = new Vector3(-rotationX, rotationY, 0);
+        }
     }
 }

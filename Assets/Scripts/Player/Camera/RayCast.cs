@@ -40,6 +40,25 @@ public class RayCast : MonoBehaviour
             {
                 pickGameObj.GetComponent<Animator>().SetBool("outline", true);
             }
+            Debug.Log(pickGameObj.tag);
         }
+        else
+        {
+            if (pickGameObj.GetComponent<Animator>())
+            {
+                pickGameObj.GetComponent<Animator>().SetBool("outline", false);
+            }
+            pickGameObj = null;
+        }
+    }
+
+    public GameObject GetInteractObj()
+    {
+        if (pickGameObj != null && pickGameObj.tag == "InteractObj")
+        {
+            return pickGameObj;
+        }
+        else
+            return null;
     }
 }

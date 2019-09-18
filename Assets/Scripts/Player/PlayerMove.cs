@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FpsPlayerMove : MonoBehaviour
+public class PlayerMove : MonoBehaviour
 {
     // 移动速度
     public float walkSpeed = 1f;

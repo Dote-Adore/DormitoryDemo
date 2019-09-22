@@ -5,7 +5,10 @@ using UnityEngine;
 // 发射射线，进行交互
 public class RayCast : MonoBehaviour
 {
-
+    // 可交互的距离
+    public float interactDistance = 1f;
+    public bool canDrawRay = true;
+    public UI_Pcikup ui_pickup;
     private GameObject pickGameObj = null;
     private Ray ray;
     private RaycastHit hit;
@@ -18,7 +21,13 @@ public class RayCast : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CastObject();
+        if(canDrawRay)
+            CastObject();
+        // 如果存在可交互物体
+        if (pickGameObj)
+            SetButtonPrompt(true);
+        else
+            SetButtonPrompt(false);
     }
 
     void CastObject()
@@ -27,29 +36,58 @@ public class RayCast : MonoBehaviour
         ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         if (Physics.Raycast(ray, out hit))
         {
-            // 获取碰到的物体
-            if (pickGameObj != hit.collider.gameObject && pickGameObj != null)
+            GameObject currentHitObj = hit.collider.gameObject;
+            // 如果超出可交互范围之外
+            if (Vector3.Distance(transform.position, currentHitObj.transform.position) > interactDistance)
             {
-                if (pickGameObj.GetComponent<Animator>())
+                // if(pickGameObj == currentHitObj)
+                if (pickGameObj != null)
                 {
-                    pickGameObj.GetComponent<Animator>().SetBool("outline", false);
+                    pickGameObj.GetComponent<InteractObj>().CancelInteract();
+                    pickGameObj = null;
+                }
+                return;
+            }
+
+            // 如果当前指向的是可交互物体
+            if (currentHitObj.tag == "InteractObj")
+            {
+                // 如果之前没有指向可交互的物体
+                if (pickGameObj == null)
+                {
+                    pickGameObj = currentHitObj;
+                    // 准备与新物体交互
+                    pickGameObj.GetComponent<InteractObj>().ReadyToInteract();
+                }
+                // 如果现在的物体和之前的物体不同
+                else if (pickGameObj != currentHitObj)
+                {
+                    // 取消之前物体交互
+                    pickGameObj.GetComponent<InteractObj>().CancelInteract();
+                    pickGameObj = currentHitObj;
+                    pickGameObj.GetComponent<InteractObj>().ReadyToInteract();
                 }
             }
-            pickGameObj = hit.collider.gameObject;
-            if (pickGameObj.GetComponent<Animator>())
+            // 如果当前指向的是不可交互物体
+            else if (pickGameObj != null)
             {
-                pickGameObj.GetComponent<Animator>().SetBool("outline", true);
+                // 取消之前的交互
+                pickGameObj.GetComponent<InteractObj>().CancelInteract();
+                pickGameObj = null;
+
             }
-            Debug.Log(pickGameObj.tag);
         }
-        else
+        // 如果没有碰到任何东西
+        else if (pickGameObj != null)
         {
-            if (pickGameObj.GetComponent<Animator>())
-            {
-                pickGameObj.GetComponent<Animator>().SetBool("outline", false);
-            }
+            pickGameObj.GetComponent<InteractObj>().CancelInteract();
             pickGameObj = null;
         }
+    }
+
+    private void SetButtonPrompt(bool Isvisiable)
+    {
+        ui_pickup.ButtonPrompt(Isvisiable);
     }
 
     public GameObject GetInteractObj()

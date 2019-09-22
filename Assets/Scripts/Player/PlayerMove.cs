@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour
     private float moveSpeed;
     private CharacterController controller;
     private float gravitySpeed = 0;
+    public bool canMove = true;
     void Start()
     {
         moveSpeed = walkSpeed;
@@ -39,6 +40,9 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 如果不能移动
+        if (!canMove)
+            return;
 
         // 获取y轴旋转角度
         float yRotation = cameraTransform.rotation.eulerAngles.y;

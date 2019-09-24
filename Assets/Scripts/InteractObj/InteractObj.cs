@@ -27,17 +27,19 @@ public class InteractObj : MonoBehaviour
         {
             animator = GetComponent<Animator>();
         }
-        else
-        {
-            Debug.LogWarning("物体"+this.name+"没有挂载组件Animator，请挂载！");
-        }
         if (GetComponent<PickupObj>())
         {
             type = InteractObjType.Pickup;
             pickupObj = GetComponent<PickupObj>();
         }
+        
     }
 
+    void OnEnable()
+    {
+        if (GetComponent<Outline>())
+            GetComponent<Outline>().SetOutline(false);
+    }
     public void Interact()
     {
         // 如果当前不可交互
@@ -61,16 +63,14 @@ public class InteractObj : MonoBehaviour
     }
     public void ReadyToInteract()
     {
-        if(animator)
-        // 将描边动画启用
-            animator.SetBool("outline", true);
+        // outline的宽度
+        if (GetComponent<Outline>())
+            GetComponent<Outline>().SetOutline(true);
     }
     public void CancelInteract()
     {
-        if(animator)
-        // 将描边动画禁止使用
-        animator.SetBool("outline", false);
-        Debug.Log("Cancel inteact:" + name);
+        if (GetComponent<Outline>())
+            GetComponent<Outline>().SetOutline(false);
     }
 
     IEnumerator InteractDown()

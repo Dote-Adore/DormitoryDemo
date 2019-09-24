@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PickupObj : MonoBehaviour
 {
-    public Vector3 offset = new Vector3(0,0,0);
+    public Vector3 offset = new Vector3(0, 0, 0);
     // 相机
     public GameObject camera = null;
     public PlayerMove player;
@@ -25,6 +25,8 @@ public class PickupObj : MonoBehaviour
     private Vector3 targetPosition; //捡起后目标位置
     private bool isPickedUpDone = false;    // 捡起动作是否完成
     private InteractObj InteractObj;
+
+    private Transform[] childrenObj;
     void Start()
     {
         // 如果需要跟随其他物体
@@ -37,7 +39,9 @@ public class PickupObj : MonoBehaviour
             InteractObj = GetComponent<InteractObj>();
             InteractObj.isTimeOverrided = true;
         }
-        this.gameObject.layer = LayerMask.GetMask("Default");
+        childrenObj = this.GetComponentsInChildren<Transform>();
+        // 将所有的mask设置为default
+        ChangeLayerMask("Default");
 
     }
 
@@ -56,7 +60,7 @@ public class PickupObj : MonoBehaviour
         {
             if (Vector3.Distance(transform.position, targetPosition) > Threshold)
             {
-                this.transform.LookAt(Vector3.Lerp(transform.forward + transform.position, camera.transform.position, Time.deltaTime * speed));
+                this.transform.LookAt(Vector3.Lerp(transform.forward + transform.position, camera.transform.position, Time.deltaTime * speed*2));
                 transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * speed);
             }
             else
@@ -79,7 +83,7 @@ public class PickupObj : MonoBehaviour
         // 如果回到初始位置，
         if (Vector3.Distance(this.transform.position,initialPosition)< Threshold)
         {
-            this.gameObject.layer = LayerMask.GetMask("Default");
+            ChangeLayerMask("Default");
             this.transform.position = initialPosition;
             this.transform.rotation = initialRotation;
             initialPosition = Vector3.zero;
@@ -94,7 +98,7 @@ public class PickupObj : MonoBehaviour
     public void Pickup()
     {
         camera.GetComponent<RayCast>().canDrawRay = false;
-        this.gameObject.layer = 8;
+        ChangeLayerMask("PickupObj");
         InteractObj.canInteract = false;
         isPickedUpDone = false;
         targetPosition = camera.transform.TransformPoint(offset);
@@ -114,12 +118,27 @@ public class PickupObj : MonoBehaviour
     {
         camera.GetComponent<RayCast>().canDrawRay = true;
         // UI遮罩取消
-        UIMask.SetText("","");
+        UIMask.SetText(null,null);
         UIMask.Blur(false);
-
         InteractObj.canInteract = false;
         player.canMove = true;
         camera.GetComponent<CameraRotation>().lockRotation = false;
         isPickedUp = false;
+    }
+
+    private void ChangeLayerMask(string LayerName)
+    {
+        if (LayerName.Equals("PickupObj"))
+        {
+            foreach (Transform i in childrenObj)
+            {
+                i.gameObject.layer = 8;
+            }
+            return;
+        }
+        else foreach (Transform i in childrenObj)
+        {
+            i.gameObject.layer = LayerMask.NameToLayer(LayerName);
+        }
     }
 }

@@ -84,7 +84,7 @@ public class Outline : MonoBehaviour {
 
     // Cache renderers
     renderers = GetComponentsInChildren<Renderer>();
-
+        Debug.Log("get renderers");
     // Instantiate outline materials
     outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
     outlineFillMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineFill"));
@@ -100,8 +100,8 @@ public class Outline : MonoBehaviour {
   }
 
   void OnEnable() {
-    foreach (var renderer in renderers) {
-
+        Debug.Log("Outline on enable:" + gameObject.name);
+        foreach (var renderer in renderers) {
       // Append outline shaders
       var materials = renderer.sharedMaterials.ToList();
 

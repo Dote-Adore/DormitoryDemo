@@ -32,13 +32,14 @@ public class InteractObj : MonoBehaviour
             type = InteractObjType.Pickup;
             pickupObj = GetComponent<PickupObj>();
         }
-        
+        if (GetComponent<Outline>())
+            GetComponent<Outline>().SetOutline(false);
+
     }
 
     void OnEnable()
     {
-        if (GetComponent<Outline>())
-            GetComponent<Outline>().SetOutline(false);
+        Debug.Log("Interact Obj on enable:" + gameObject.name);
     }
     public void Interact()
     {
@@ -63,6 +64,7 @@ public class InteractObj : MonoBehaviour
     }
     public void ReadyToInteract()
     {
+        Debug.Log("readyfjsdl;fj");
         // outline的宽度
         if (GetComponent<Outline>())
             GetComponent<Outline>().SetOutline(true);
